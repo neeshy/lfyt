@@ -9,7 +9,7 @@ cmd open ${{
     set -- "$@" "https://youtu.be/$(basename -- "$file" | cut -d: -f1)"
   done
   if [ -n "$DISPLAY" ]; then
-    setsid -f -- mpv -- "$@" </dev/null 1>&0 2>&0
+    exec setsid -f -- mpv -- "$@" </dev/null 1>&0 2>&0
   else
     exec mpv -- "$@"
   fi
@@ -19,10 +19,6 @@ map <enter> open
 cmd dl ${{
   mkdir -p "$HOME/downloads"
   cd "$HOME/downloads"
-  set --
-  for file in $fx; do
-    set -- "$@" "https://youtu.be/$(basename -- "$file" | cut -d: -f1)"
-  done
-  setsid -f -- youtube-dl -- "$@" </dev/null 1>&0 2>&0
+  exec setsid -f -- youtube-dl -- $(basename -a -- $fx | cut -d: -f1)
 }}
 map d dl
