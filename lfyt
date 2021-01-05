@@ -7,11 +7,11 @@ usage() {
 }
 
 n="$1"
-shift
 if ! [ "$n" -gt 0 ] 2>/dev/null; then
   usage
 fi
 
+shift
 old_ifs="$IFS"
 IFS="+"
 query="$*"
