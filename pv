@@ -18,8 +18,11 @@ y="$5"
 if [ -n "$FIFO_UEBERZUG" ]; then
   printf '{"action": "add", "identifier": "preview", "x": %d, "y": %d, "width": %d, "height": %d, "scaler": "contain", "scaling_position_x": 0.5, "scaling_position_y": 0.5, "path": "%s"}\n' \
     "$x" "$y" "$width" "$height" "$(escape "$dir/.$vid.thumbnail")" >"$FIFO_UEBERZUG"
+  err="1"
+else
+  err="0"
 fi
 
 lf -remote "send $id set promptfmt \"$(escape "$title")\""
 lf -remote "send $id echo \"\\033[4mEnter\\033[0m Play | \\033[4md\\033[0m Download Selected | \\033[4mq\\033[m Quit\""
-exit 1
+exit "$err"
