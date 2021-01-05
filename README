@@ -1,0 +1,9 @@
+This project is loosely based on https://github.com/slavistan/lf-gadgets/tree/master/lf-yt
+
+These scripts allow you to search for YouTube videos and select which video to
+watch using lf.
+
+Differences with lf-gadgets/lf-yt
+  * youtube-dl is used instead of requiring a YouTube API key. This makes
+    searching much slower.
+  * Multiple files can be played at once using the file selection

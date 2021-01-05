@@ -1,0 +1,51 @@
+#!/bin/sh
+set -e
+
+usage() {
+  printf 'Usage: %s N QUERY_TERMS...\n' "$(basename "$0")" >&2
+  exit 1
+}
+
+n="$1"
+shift
+if ! [ "$n" -gt 0 ] 2>/dev/null; then
+  usage
+fi
+
+old_ifs="$IFS"
+IFS="+"
+query="$*"
+IFS="$old_ifs"
+if [ -z "$query" ]; then
+  usage
+fi
+
+tmpdir_lfyt="${TMPDIR:-/tmp}/lf-yt-$$"
+mkdir -p "$tmpdir_lfyt"
+
+if [ -n "$DISPLAY" ]; then
+  export FIFO_UEBERZUG="$tmpdir_lfyt/.fifo"
+
+  cleanup() {
+    exec 3>&-
+    rm -r "$tmpdir_lfyt"
+  }
+
+  mkfifo "$FIFO_UEBERZUG"
+  ueberzug layer -s <"$FIFO_UEBERZUG" &
+  exec 3>"$FIFO_UEBERZUG"
+else
+  cleanup() {
+    rm -r "$tmpdir_lfyt"
+  }
+fi
+trap cleanup EXIT
+
+cd "$tmpdir_lfyt"
+youtube-dl -e --get-id --get-thumbnail "ytsearch$n:$query" |
+  while IFS= read -r title; IFS= read -r id; IFS= read -r thumbnail; do
+    : >"$id: $title"
+    curl -sL -o ".$id.thumbnail" "$thumbnail"
+  done
+
+exec lf -command "source ${XDG_CONFIG_HOME:-$HOME/.config}/lf/lfyt/lfrc" "$tmpdir_lfyt"
