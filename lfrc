@@ -17,6 +17,7 @@ cmd open ${{
 map <enter> open
 
 cmd dl ${{
+  mkdir -p "$HOME/downloads"
   cd "$HOME/downloads"
   set --
   for file in $fx; do
