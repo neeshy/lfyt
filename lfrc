@@ -16,9 +16,8 @@ cmd open ${{
 }}
 map <enter> open
 
-cmd dl ${{
+map d ${{
   mkdir -p "$HOME/downloads"
   cd "$HOME/downloads"
   exec setsid -f -- youtube-dl -- $(basename -a -- $fx | cut -d: -f1)
 }}
-map d dl
